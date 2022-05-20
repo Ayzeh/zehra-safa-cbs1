@@ -13,7 +13,7 @@ var options = {
     promiseLib: promise
 };
 
-
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0"
 function getAllLocations(cb) {
     DATABASE_PGB.any('SELECT ST_X(loc) as longitude, ST_Y(loc) as latitude from trees')
         .then(function (data) {
