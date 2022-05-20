@@ -1,0 +1,415 @@
+
+Skip to content
+Search or jump to…
+Pull requests
+Issues
+Marketplace
+Explore
+ 
+@Ayzeh 
+uyducusirinn
+/
+OsGeoChallenge-individual-
+Public
+Code
+Issues
+Pull requests
+Actions
+Projects
+Wiki
+Security
+Insights
+OsGeoChallenge-individual-/index.html
+@uyducusirinn
+uyducusirinn Update index.html
+Latest commit e1e5831 on 10 Jun 2021
+ History
+ 1 contributor
+373 lines (278 sloc)  10.7 KB
+   
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    <meta charset="utf-8"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+<style>
+body {
+  background-color: rgb(11, 219, 39);
+  text-align:center;
+}
+
+.test{
+color:dark rgb(255, 0, 242);
+text-align:center;
+width: 50%;
+font: bold 1.25em "Trebuchet MS", Verdana, Arial, Helvetica,
+sans-serif;
+border: 1px solid rgb(252, 255, 255);
+letter-spacing: 2px;
+text-align: left;
+padding: 6px 6px 6px 12px;
+background: rgb(212, 5, 40);
+border-collapse: collapse;
+}
+ 
+
+
+
+/* block-$ */
+.block-effect {
+  font-size: calc(8px + 6vw);
+}
+
+.block-reveal {
+  font-family: Papyrus,"Sagoe UI",monospace;
+  --t: calc(var(--td) + var(--d));
+
+  color: transparent;
+  padding: 4px;
+
+  position: relative;
+  overflow: hidden;
+
+  animation: revealBlock 0s var(--t) forwards;
+}
+
+.block-reveal::after {
+  content: '';
+
+  width: 0%;
+  height: 100%;
+  padding-bottom: 4px;
+
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  background: var(--bc);
+  animation: revealingIn var(--td) var(--d) forwards, revealingOut var(--td) var(--t) forwards;
+}
+
+
+/* animations */
+@keyframes revealBlock {
+  100% {
+    color: #0f0f0f;
+  }
+}
+
+@keyframes revealingIn {
+
+  0% {
+    width: 0;
+  }
+
+  100% {
+    width: 100%;
+  }
+}
+
+@keyframes revealingOut {
+
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(100%);
+  }
+
+}
+
+.abs-site-link {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  color: hsla(0, 0%, 0%, .6);
+  font-size: 16px;
+}
+</style>
+</nav>
+<h1 class="block-effect" style="--td: 1.2s">
+  <div class="block-reveal" style="--bc: #b6052b; --d: .1s">OSGEO CHALLENGE 2021</div>
+  
+  
+</h1>
+
+
+
+
+      
+    </form>
+   
+
+</nav>
+<body>
+    <div id="mapdiv"></div>
+    <script src="http://www.openlayers.org/api/OpenLayers.js"></script>
+    <script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=fetch,requestAnimationFrame,Element.prototype.classList,URL"></script>
+    <div id="mapdiv" class="mapdiv"></div>
+    <script>
+var fruits = [];
+var ltree = [];
+var llat = [];
+var llon = [];
+var count = 1
+function makeList() {
+        $.getJSON('/api/data', function(data) {
+            console.log(data[0].longitude);
+            console.log(data[0].latitude);
+            console.log(data[0].h);
+            console.log(data[0].t);
+            console.log(data[0].obs);
+            console.log(data[0].i);
+
+
+
+            var veri1=data[0].longitude;
+            var veri2=data[0].latitude;
+
+
+
+            map = new OpenLayers.Map("mapdiv",{
+            controls:[
+                    new OpenLayers.Control.Navigation(),
+                    new OpenLayers.Control.PanZoomBar(),
+                    new OpenLayers.Control.Permalink(),
+                    new OpenLayers.Control.ScaleLine({geodesic: true}),
+                    new OpenLayers.Control.Permalink('permalink'),
+                    new OpenLayers.Control.MousePosition(),              
+                    new OpenLayers.Control.LayerSwitcher(),
+                    new OpenLayers.Control.Attribution()],
+                    maxExtent: new OpenLayers.Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34),
+                    maxResolution: 156543.0399,
+                    numZoomLevels: 19,
+                    units: 'm',
+                    projection: new OpenLayers.Projection("EPSG:900913"),
+                    displayProjection: new OpenLayers.Projection("EPSG:4326")
+                });
+    map.addLayer(new OpenLayers.Layer.OSM());
+
+    
+
+    // we will use this vector layer to demonstrate editing vector features
+        var editingLayer = new OpenLayers.Layer.Vector("Editing");
+        map.addLayers([editingLayer]);
+
+        
+
+        // init the editing toolbar and a basic selection control
+        var editingToolbar = new OpenLayers.Control.EditingToolbar(editingLayer);
+        var selectCtrl = new OpenLayers.Control.SelectFeature(
+                editingLayer, {
+                hover: true
+            });
+        map.addControls([editingToolbar, selectCtrl]);
+
+    epsg4326 =  new OpenLayers.Projection("EPSG:4326"); //WGS 1984 projection
+    projectTo = map.getProjectionObject(); //The map projection (Spherical Mercator)
+
+
+
+            var point;
+            var length=data.length;
+
+            var vectorLayer = new OpenLayers.Layer.Vector("Overlay");
+            //TODO - data haritaya ekleme işlemi
+            for (point = 0; point < data.length; point++) {
+            var lon=data[point].longitude;
+            var lat=data[point].latitude;
+            var hei=data[point].h;
+            var ty=data[point].t;
+            var obs=data[point].ob;
+            var idd=data[point].i;
+            fruits.push('-------------','Tree Type:',ty,'Latitude:',lat,'Longitude:',lon,'-------------');
+            llat.push(lat)
+            llon.push(lon)
+            ltree.push(ty)
+
+
+
+            var lonLat = new OpenLayers.LonLat(lon,lat ).transform(new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
+                                                                map.getProjectionObject() // to Spherical Mercator Projection
+                                                                )
+            var zoom=8;
+
+            var markers = new OpenLayers.Layer.Markers( "Markers" );
+            var maker_icon2;
+if (ty=='Mese') {
+  maker_icon2 = "https://i.ibb.co/34JzKHF/agac.jpg";
+} else if(ty=='Oak'){ maker_icon2='https://i.ibb.co/s6zfYcj/tree.jpg'}
+  else if(ty=='Cam'){ maker_icon2='https://i.ibb.co/s6zfYcj/tree.jpg'}
+else {
+  maker_icon2 = "https://i.ibb.co/34JzKHF/agac.jpg";
+}
+            map.addLayer(markers)
+
+            markers.addMarker(new OpenLayers.Marker(lonLat))
+
+            map.setCenter (lonLat, zoom)
+
+            // Define markers as "features" of the vector layer:
+    var feature = new OpenLayers.Feature.Vector(
+            new OpenLayers.Geometry.Point( lon,lat ).transform(epsg4326, projectTo),
+            {description:'Latitude:'+lat+'<br>Longitude:'+lon+'<br>Tree Type:'+ty+'<br>İd:'+idd+'<br>Height:'+hei+'<br>Observation Time:'+obs+'<br>İmage<br>'+'<img src="http://pngimg.com/uploads/tree/tree_PNG92789.png"  height="100" width="100">'} ,
+
+            {externalGraphic: maker_icon2, graphicHeight: 25, graphicWidth: 21, graphicXOffset:-12, graphicYOffset:-25  }
+        );
+    vectorLayer.addFeatures(feature);
+
+
+
+
+
+    map.addLayer(vectorLayer);
+
+
+    //Add a selector control to the vectorLayer with popup functions
+    var controls = {
+      selector: new OpenLayers.Control.SelectFeature(vectorLayer, { onSelect: createPopup, onUnselect: destroyPopup })
+    };
+
+    function createPopup(feature) {
+      feature.popup = new OpenLayers.Popup.FramedCloud("pop",
+          feature.geometry.getBounds().getCenterLonLat(),
+          null,
+          '<div class="markerContent">'+feature.attributes.description+'</div>',
+          null,
+          true,
+          function() { controls['selector'].unselectAll(); }
+      );
+      //feature.popup.closeOnMove = true;
+      map.addPopup(feature.popup);
+    }
+
+    function destroyPopup(feature) {
+      feature.popup.destroy();
+      feature.popup = null;
+    }
+
+    map.addControl(controls['selector']);
+    controls['selector'].activate();
+
+            }
+
+
+        });
+        let listData = [
+        
+        
+    ],
+    // Make a container element for the list
+    listContainer = document.createElement('div'),
+    // Make the list
+    listElement = document.createElement('ul'),
+    // Set up a loop that goes through the items in listItems one at a time
+    numberOfListItems = listData.length,
+    listItem,
+    i;
+
+    // Add it to the page
+    document.getElementsByTagName('body')[0].appendChild(listContainer);
+    listContainer.appendChild(listElement);
+
+    for (i = 0; i < numberOfListItems; ++i) {
+        // create an item for each one
+        listItem = document.createElement('li');
+
+        // Add the item text
+        listItem.innerHTML = listData[i];
+
+        // Add listItem to the listElement
+        listElement.appendChild(listItem);
+    }
+}
+makeList();
+
+        
+var names = [];
+function displayUserName()
+{
+
+x1=document.getElementById("box1");
+
+if (count==1){
+  window.alert('Bunu seçtiniz:'+x1.value)
+if (x1.value!="Select Tree Type"){
+  count= count +1
+  for (let i=0; i< fruits.length;i++){ if (String(ltree[i])!='undefined' && String(ltree[i])==x1.value){
+  document.getElementById("name").innerHTML += "<a class='test'>"+'Tree Type: '+ "<strong>" +ltree[i]+ "</strong>" + ' Latitude: ' + "<strong>" +llat[i]+ "</strong>" +' Longitude: ' + "<strong>" +llon[i]+ "</strong>" +"</a><br><br>";
+}}}
+else{
+  count= count +1
+  for (let i=0; i< fruits.length;i++){ if (String(ltree[i])!='undefined'){
+  document.getElementById("name").innerHTML += "<a class='test'>"+'Tree Type: '+ "<strong>" +ltree[i]+ "</strong>" + ' Latitude: ' + "<strong>" +llat[i]+ "</strong>" +' Longitude: ' + "<strong>" +llon[i]+ "</strong>" +"</a><br><br>";
+}}
+
+
+
+            // when clicked the button
+            var content = document.getElementById('source').value;
+            // a [save as] dialog will be shown
+            window.open("data:application/txt," + [names+'This\tfile\twas\tcreated\tby: '+content+'\t'+new Date()]);
+  }
+
+  document.body.appendChild(buton)}
+else{
+  x2 = x1.value
+  if (count!=1){
+if (x1.value!="All Trees"){
+  count= count +1
+  for (let i=0; i< fruits.length;i++){ if (String(ltree[i])!='undefined' && String(ltree[i])==x2){
+  document.getElementById("name").innerHTML += "<a class='test'>"+'Tree Type: '+ "<strong>" +ltree[i]+ "</strong>" + ' Latitude: ' + "<strong>" +llat[i]+ "</strong>" +' Longitude: ' + "<strong>" +llon[i]+ "</strong>" +"</a><br><br>";
+}}}
+else{
+  count= count +1
+  for (let i=0; i< fruits.length;i++){ if (String(ltree[i])!='undefined'){
+  document.getElementById("name").innerHTML += "<a class='test'>"+'Tree Type: '+ "<strong>" +ltree[i]+ "</strong>" + ' Latitude: ' + "<strong>" +llat[i]+ "</strong>" +' Longitude: ' + "<strong>" +llon[i]+ "</strong>" +"</a><br><br>";
+}}
+}  
+
+}
+else{window.location.reload()}
+}
+
+};
+
+    </script>
+
+
+
+    
+  <option >All Trees</option>
+  <option >Mese</option>
+  <option >Cam</option>
+  <option >Oak</option>
+  <option> Pine</option>
+<div id="ZEHRA">
+</select >
+
+
+</div>
+
+<br>
+<br>
+
+    </script>
+  </body>
+  </html>
+© 2022 GitHub, Inc.
+Terms
+Privacy
+Security
+Status
+Docs
+Contact GitHub
+Pricing
+API
+Training
+Blog
+About
+Loading complete
