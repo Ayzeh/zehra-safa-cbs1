@@ -1,15 +1,15 @@
 
 var developmentDatabase = {
     postgres: {
-        host: 'ec2-52-18-116-67.eu-west-1.compute.amazonaws.com',
+        host: 'ec2-54-170-90-26.eu-west-1.compute.amazonaws.com',
         port: 5432,
-        database: 'dc36ku7u99meh5',
-        user: 'yepwepkzzuvzrb',
-        password: '33016760071c4f56084ea978788b264c380490745b6d577e463dbd044e72ed93'
+        database: 'd5vpqu2il2mgcc',
+        user: 'aouwpqhunhlxbe',
+        password: 'f6d2c4a2efc99b368348e5bbfb7467f16a63ba32b8b2ffd2acbeab92b85a8d90'
     }
 }
 
-var connectionString = "postgres://yepwepkzzuvzrb:33016760071c4f56084ea978788b264c380490745b6d577e463dbd044e72ed93@ec2-52-18-116-67.eu-west-1.compute.amazonaws.com:5432/dc36ku7u99meh5";
+var connectionString = "postgres://aouwpqhunhlxbe:f6d2c4a2efc99b368348e5bbfb7467f16a63ba32b8b2ffd2acbeab92b85a8d90@ec2-54-170-90-26.eu-west-1.compute.amazonaws.com:5432/d5vpqu2il2mgcc";
 
 if (process.env.NODE_ENV == 'production') {
     //Production mode
